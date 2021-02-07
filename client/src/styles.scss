@@ -49,8 +49,8 @@
     overflow-y: auto;
 
     /* Hide scrollbar for IE, Edge and Firefox */
-    -ms-overflow-style: none;  /* IE and Edge */
-    scrollbar-width: none;  /* Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
 
     /* Hide scrollbar for Chrome, Safari and Opera */
     ::-webkit-scrollbar {
@@ -75,6 +75,16 @@
     padding: 32px;
     height: 100vh;
     position: relative;
+    overflow-y: scroll;
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none; /* IE and Edge */
+    scrollbar-width: none; /* Firefox */
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    ::-webkit-scrollbar {
+      display: none;
+    }
   }
 }
 
@@ -129,4 +139,53 @@
 
 .weightBlack {
   font-weight: $weightBlack;
+}
+
+.pellet {
+  cursor: pointer;
+  width: 24px;
+  height: 24px;
+  border: 2px solid black;
+  border-radius: 12px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+
+  i {
+    font-size: 15px;
+  }
+
+  &.blue {
+    background-color: $blue500;
+    border-color: $blue700;
+  }
+
+  &.orange {
+    background-color: $orange500;
+    border-color: $orange700;
+  }
+
+  &.red {
+    background-color: $red500;
+    border-color: $red700;
+  }
+
+  &.green {
+    background-color: $green500;
+    border-color: $green700;
+  }
+
+  &.black {
+    background-color: $black;
+    border-color: $grey800;
+  }
+
+  &.white {
+    background-color: $white;
+    border-color: $grey200;
+
+    i {
+      color: #000;
+    }
+  }
 }

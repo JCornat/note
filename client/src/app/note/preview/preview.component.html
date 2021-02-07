@@ -6,4 +6,19 @@
     <div class="title bold mb-32" contenteditable="true" (input)="onTitleChange($event.target)" style="outline: none; padding-top: 3px; padding-bottom: 3px; padding-left: 1px; font-size: 30px; line-height: 1;">{{_data.title}}</div>
 
     <p class="content" contenteditable="true" (input)="onContentChange($event.target)" [innerHTML]="_data.content" style="outline: none;"></p>
+
+    <div class="flex mb-24" style="margin-top: 80px">
+        <ng-container *ngFor="let color of colors">
+            <div class="pellet mr-4" [ngClass]="color" (click)="updateColor(color)">
+                <i class="icon icon-check" *ngIf="color === _data.color"></i>
+            </div>
+        </ng-container>
+
+        <div class="fill"></div>
+    </div>
+
+    <div class="flex mb-32">
+        <div class="fill"></div>
+        <c7z-button class="secondary red" icon="delete" (onClick)="remove()"></c7z-button>
+    </div>
 </div>

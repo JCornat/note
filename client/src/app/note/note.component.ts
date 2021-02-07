@@ -71,6 +71,12 @@ export class NoteComponent implements OnInit {
     note.color = data.color;
   }
 
+  public async onRemove(note: Note): Promise<void> {
+    await this.noteService.delete(note._id);
+    await this.pullAll();
+    this.note = null;
+  }
+
   public navigateAdd(): void {
     this.router.navigate(['/add']);
   }

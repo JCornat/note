@@ -15,10 +15,12 @@ export class NotePreviewComponent implements OnInit {
   }
 
   @Output() public onUpdate = new EventEmitter<Note>();
+  @Output() public onRemove = new EventEmitter<boolean>();
 
   public _data: Note;
   public edit: boolean;
   public formGroup: FormGroup;
+  public colors: string[];
 
   constructor() {
     //
@@ -30,6 +32,15 @@ export class NotePreviewComponent implements OnInit {
       content: new FormControl(this._data.content),
       color: new FormControl(this._data.color),
     });
+
+    this.colors = [
+      'blue',
+      'orange',
+      'red',
+      'green',
+      'black',
+      'white',
+    ];
 
     this.formGroup.valueChanges
       .subscribe(() => {
@@ -46,5 +57,14 @@ export class NotePreviewComponent implements OnInit {
   public onContentChange(event): void {
     console.log(event.innerHTML);
     this.formGroup.get('content').setValue(event.innerHTML);
+  }
+
+  public updateColor(color: string): void {
+    this._data.color = color;
+    this.formGroup.get('color').setValue(color);
+  }
+
+  public remove(): void {
+    this.onRemove.emit(true);
   }
 }
