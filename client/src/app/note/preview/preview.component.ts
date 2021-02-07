@@ -1,38 +1,40 @@
-import { Component, EventEmitter, Input, OnInit, Output } from '@angular/core';
+import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
 import { Note } from '../note';
 import { FormControl, FormGroup } from '@angular/forms';
+import * as Global from '../../global/global';
+import { Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'note-preview',
   templateUrl: './preview.component.html',
   styleUrls: ['./preview.component.scss']
 })
-export class NotePreviewComponent implements OnInit {
+export class NotePreviewComponent implements OnInit, OnDestroy {
   @Input() set data(data: Note) {
     this._data = {
       ...data,
     };
+
+    this.updateFormData();
   }
 
-  @Output() public onUpdate = new EventEmitter<Note>();
+  @Output() public onUpdate = new EventEmitter<{ title: string, content: string, color: string }>();
+  @Output() public onSave = new EventEmitter<Note>();
   @Output() public onRemove = new EventEmitter<boolean>();
 
   public _data: Note;
   public edit: boolean;
   public formGroup: FormGroup;
   public colors: string[];
+  public formGroupUpdateSubscriber: Subscription;
+  public formGroupSaveSubscriber: Subscription;
 
   constructor() {
     //
   }
 
   public ngOnInit(): void {
-    this.formGroup = new FormGroup({
-      title: new FormControl(this._data.title),
-      content: new FormControl(this._data.content),
-      color: new FormControl(this._data.color),
-    });
-
     this.colors = [
       'blue',
       'orange',
@@ -42,11 +44,39 @@ export class NotePreviewComponent implements OnInit {
       'white',
     ];
 
-    this.formGroup.valueChanges
+    this.buildFormGroup();
+  }
+
+  public ngOnDestroy(): void {
+    this.formGroupUpdateSubscriber.unsubscribe();
+    this.formGroupSaveSubscriber.unsubscribe();
+  }
+
+  public buildFormGroup(): void {
+    this.formGroup = new FormGroup({
+      title: new FormControl(this._data.title),
+      content: new FormControl(this._data.content),
+      color: new FormControl(this._data.color),
+    });
+
+    this.formGroupUpdateSubscriber = this.formGroup.valueChanges
       .subscribe(() => {
-        console.log('this.formGroup.value', this.formGroup.value);
         this.onUpdate.emit(this.formGroup.value);
       });
+
+    this.formGroupSaveSubscriber = this.formGroup.valueChanges
+      .pipe(debounceTime(500))
+      .subscribe(() => {
+        this.onSave.emit(this.formGroup.value);
+      });
+  }
+
+  public updateFormData(): void {
+    if (Global.isEmpty(this.formGroup)) {
+      return;
+    }
+
+    this.formGroup.patchValue(this._data, {emitEvent: false});
   }
 
   public onTitleChange(event): void {

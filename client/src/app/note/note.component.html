@@ -1,11 +1,11 @@
 <div class="notes-container">
     <div class="notes p-16">
         <div class="mb-16 flex" style="justify-content: end;">
-            <div style="max-width: 400px; width: 100%;">
+            <div class="fill">
                 <dynamic-form-section [questions]="questions" (onValid)="onValid($event)"></dynamic-form-section>
             </div>
 
-            <div class="ml-8">
+            <div class="ml-16">
                 <c7z-button class="secondary grey" icon="add" (onClick)="navigateAdd()"></c7z-button>
             </div>
         </div>
@@ -16,6 +16,8 @@
     </div>
 
     <ng-container *ngIf="note">
-        <note-preview [data]="note" (onUpdate)="onUpdate($event, note)" (onRemove)="onRemove(note)"></note-preview>
+        <div class="preview-container">
+            <note-preview [data]="note" (onUpdate)="onUpdate($event, note)" (onSave)="onSave(note)" (onRemove)="onRemove(note)"></note-preview>
+        </div>
     </ng-container>
 </div>

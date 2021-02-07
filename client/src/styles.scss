@@ -63,13 +63,16 @@
       max-width: none;
     }
 
-    .preview {
+    .preview-container {
       display: none;
     }
   }
 
-  .preview {
+  .preview-container {
     flex: 1;
+  }
+
+  .preview {
     padding: 32px;
     height: 100vh;
     position: relative;

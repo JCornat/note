@@ -46,7 +46,7 @@ export class NoteComponent implements OnInit {
     for (const note of notes) {
       note.date = moment();
       note.dateString = note.date.format('ddd DD MMM, HH:mm');
-      note.color = 'blue';
+      note.color = note.color || 'blue';
     }
 
     if (this.formData?.search) {
@@ -66,10 +66,14 @@ export class NoteComponent implements OnInit {
     this.note = note;
   }
 
-  public onUpdate(data: Note, note: Note): void {
+  public async onUpdate(data: { title: string, content: string, color: string }, note: Note): Promise<void> {
     note.title = data.title;
     note.content = data.content;
     note.color = data.color;
+  }
+
+  public async onSave(note: Note): Promise<void> {
+    await this.noteService.update(note);
   }
 
   public async onRemove(note: Note): Promise<void> {
