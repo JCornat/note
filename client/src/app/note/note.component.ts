@@ -50,9 +50,7 @@ export class NoteComponent implements OnInit {
 
   public processNotes(notes: Note[]): void {
     for (const note of notes) {
-      note.date = moment();
-      note.dateString = note.date.format('ddd DD MMM, HH:mm');
-      note.color = note.color || 'blue';
+      note.dateString = moment(note.date).format('ddd DD MMM, HH:mm');
     }
 
     if (this.formData?.search) {
@@ -70,7 +68,7 @@ export class NoteComponent implements OnInit {
 
   public detail(note: Note): void {
     if (this.note && this.noteUpdated) { // Fire update before change note
-      this.update(this.note);
+      this.save(this.note);
     }
 
     if (this.saveSubscriber && !this.saveSubscriber.closed) {
@@ -91,8 +89,20 @@ export class NoteComponent implements OnInit {
     this.saveSubject.next(note);
   }
 
+  public async save(note: Note): Promise<void> {
+    if (note._id) {
+      await this.noteService.update(note);
+    } else {
+      note._id = await this.noteService.add(note);
+    }
+  }
+
   public async update(note: Note): Promise<void> {
     await this.noteService.update(note);
+  }
+
+  public async add(note: Note): Promise<void> {
+    await this.noteService.add(note);
   }
 
   public async onRemove(note: Note): Promise<void> {
@@ -101,8 +111,19 @@ export class NoteComponent implements OnInit {
     this.note = null;
   }
 
-  public navigateAdd(): void {
-    this.router.navigate(['/add']);
+  public createNote(): void {
+    const currentDate = moment();
+    const note = {
+      _id: undefined,
+      title: '',
+      content: '',
+      color: 'blue',
+      date: currentDate,
+      dateString: currentDate.format('ddd DD MMM, HH:mm'),
+    };
+
+    this.notes.unshift(note);
+    this.detail(note);
   }
 
   public navigateUpdate(id: string): void {
@@ -127,7 +148,7 @@ export class NoteComponent implements OnInit {
     this.saveSubscriber = this.saveSubject
       .pipe(debounceTime(2000))
       .subscribe((note) => {
-        this.update(note);
+        this.save(note);
       });
   }
 }

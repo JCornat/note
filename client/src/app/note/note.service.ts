@@ -27,7 +27,6 @@ export class NoteService {
     };
 
     const data: any = await this.requestService.get(optionsQuery).toPromise();
-    console.log(data);
 
     return {
       limit: data.data.limit,
@@ -55,7 +54,7 @@ export class NoteService {
     await this.requestService.put(optionsQuery).toPromise();
   }
 
-  public async add(options: { [key: string]: any }): Promise<void> {
+  public async add(options: { [key: string]: any }): Promise<string> {
     const optionsQuery = {
       url: `/api/note`,
       body: {
@@ -63,7 +62,9 @@ export class NoteService {
       }
     };
 
-    await this.requestService.post(optionsQuery).toPromise();
+    const data = await this.requestService.post(optionsQuery).toPromise();
+    console.log(data);
+    return data.data;
   }
 
   public async delete(id): Promise<void> {

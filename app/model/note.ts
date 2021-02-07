@@ -1,4 +1,5 @@
 import { MongoClient, ObjectId } from 'mongodb';
+import * as moment from 'moment';
 
 import { MONGO } from '../config/config';
 import * as MongoConnector from '../connector/mongo';
@@ -29,14 +30,15 @@ export async function getAll(options: { search?: string, offset: number, limit: 
   }
 
   const sort = {
-    score: {$meta: 'textScore'},
+    index: -1,
+    // score: {$meta: 'textScore'},
   };
 
   const projection = {
-    score: {$meta: 'textScore'},
+    // score: {$meta: 'textScore'},
   };
 
-  const res = await collection.find(findOptions).sort(sort).project(projection).toArray();
+  const res = await collection.find(findOptions).sort(sort).project(projection).collation({locale: 'en_US', numericOrdering: true}).toArray();
   const data = [];
   for (let i = 0; i < res.length; i++) {
     if (i < options.offset) {
@@ -62,22 +64,42 @@ export async function getOne(options: any): Promise<any> {
 }
 
 export async function add(options: any): Promise<any> {
+  const index = await getLastIndex();
   const insertValue = {
     title: options.title,
     content: options.content,
+    color: options.color,
+    date: moment().format(),
+    index,
   };
 
   const data = await collection.insertOne(insertValue);
-  return data.insertId;
+  return data.insertedId.toString();
 }
 
 export async function remove(options: any): Promise<any> {
   await collection.findOneAndDelete({_id: new ObjectId(options.id)});
 }
 
+export async function getLastIndex(): Promise<any> {
+  const data = await collection.find().sort({index: -1}).collation({locale: 'en_US', numericOrdering: true}).toArray();
+  if (Global.isEmpty(data)) {
+    return 1;
+  }
+
+  return (data[0].index || 1) + 1;
+}
+
 export async function update(options: any): Promise<any> {
   const id = options._id;
-  delete options._id;
-  await collection.findOneAndUpdate({_id: new ObjectId(id)}, {$set: options});
+  const updateValue = {
+    title: options.title,
+    content: options.content,
+    color: options.color,
+    date: options.date,
+    index: options.index,
+  };
+
+  await collection.findOneAndUpdate({_id: new ObjectId(id)}, {$set: updateValue});
   return id;
 }

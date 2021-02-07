@@ -3,13 +3,19 @@
         <div class="date bold opacity-8" style="font-size: 13px;">{{_data.dateString}}</div>
     </div>
 
-    <div class="title bold mb-32" contenteditable="true" (input)="onTitleChange($event.target)" style="outline: none; padding-top: 3px; padding-bottom: 3px; padding-left: 1px; font-size: 30px; line-height: 1;">{{_data.title}}</div>
+    <div style="position: relative; z-index: 1;">
+        <div style="position: absolute; z-index: -1; top: 0; left: 0;" class="opacity-3 title" *ngIf="isEmptyTitle">Title</div>
+        <div class="title" contenteditable="true" (input)="onTitleChange($event.target)">{{_data.title}}</div>
+    </div>
 
-    <p class="content" contenteditable="true" (input)="onContentChange($event.target)" [innerHTML]="_data.content" style="outline: none;"></p>
+    <div style="position: relative; z-index: 1;">
+        <div style="position: absolute; z-index: -1; top: 0; left: 0;" class="opacity-3 content" *ngIf="isEmptyContent">Content</div>
+        <p class="content" contenteditable="true" (input)="onContentChange($event.target)" [innerHTML]="_data.content" style="outline: none;"></p>
+    </div>
 
     <div class="flex mb-24" style="margin-top: 80px">
         <ng-container *ngFor="let color of colors">
-            <div class="pellet mr-4" [ngClass]="color" (click)="updateColor(color)">
+            <div class="pellet mr-6" [ngClass]="color" (click)="updateColor(color)">
                 <i class="icon icon-check" *ngIf="color === _data.color"></i>
             </div>
         </ng-container>

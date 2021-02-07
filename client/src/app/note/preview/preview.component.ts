@@ -24,6 +24,8 @@ export class NotePreviewComponent implements OnInit, OnDestroy {
 
   public _data: Note;
   public edit: boolean;
+  public isEmptyTitle: boolean;
+  public isEmptyContent: boolean;
   public formGroup: FormGroup;
   public colors: string[];
   public formGroupSubscriber: Subscription;
@@ -50,6 +52,9 @@ export class NotePreviewComponent implements OnInit, OnDestroy {
   }
 
   public buildFormGroup(): void {
+    this.isEmptyTitle = (Global.isEmpty(this._data.title));
+    this.isEmptyContent = (Global.isEmpty(this._data.content));
+
     this.formGroup = new FormGroup({
       title: new FormControl(this._data.title),
       content: new FormControl(this._data.content),
@@ -58,6 +63,10 @@ export class NotePreviewComponent implements OnInit, OnDestroy {
 
     this.formGroupSubscriber = this.formGroup.valueChanges
       .subscribe(() => {
+        this.isEmptyTitle = Global.isEmpty(this.formGroup.get('title').value);
+        this.isEmptyContent = Global.isEmpty(this.formGroup.get('content').value);
+        console.log(Global.isEmpty(this.formGroup.get('content').value), this.formGroup.get('content').value);
+
         this.onUpdate.emit(this.formGroup.value);
       });
   }
@@ -71,13 +80,13 @@ export class NotePreviewComponent implements OnInit, OnDestroy {
   }
 
   public onTitleChange(event): void {
-    console.log('event', event.innerText);
-    this.formGroup.get('title').setValue(event.innerText);
+    const content = (event.innerText && event.innerHTML !== '<br>') ? event.innerHTML : null;
+    this.formGroup.get('title').setValue(content);
   }
 
   public onContentChange(event): void {
-    console.log(event.innerHTML);
-    this.formGroup.get('content').setValue(event.innerHTML);
+    const content = (event.innerHTML && event.innerHTML !== '<br>') ? event.innerHTML : null;
+    this.formGroup.get('content').setValue(content);
   }
 
   public updateColor(color: string): void {
