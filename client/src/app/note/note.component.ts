@@ -6,6 +6,8 @@ import { Note } from './note';
 import { Question } from '../question/question';
 import { NoteService } from './note.service';
 import * as Global from '../global/global';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime, takeUntil } from 'rxjs/operators';
 
 @Component({
   selector: 'app-note',
@@ -21,6 +23,10 @@ export class NoteComponent implements OnInit {
   public limit: number;
   public offset: number;
   public note: Note;
+
+  public noteUpdated: boolean;
+  private saveSubject = new Subject<Note>();
+  public saveSubscriber: Subscription;
 
   constructor(
     public noteService: NoteService,
@@ -63,6 +69,16 @@ export class NoteComponent implements OnInit {
   }
 
   public detail(note: Note): void {
+    if (this.note && this.noteUpdated) { // Fire update before change note
+      this.update(this.note);
+    }
+
+    if (this.saveSubscriber && !this.saveSubscriber.closed) {
+      this.saveSubscriber.unsubscribe();
+    }
+
+    this.noteUpdated = false;
+    this.subscribeSave();
     this.note = note;
   }
 
@@ -70,9 +86,12 @@ export class NoteComponent implements OnInit {
     note.title = data.title;
     note.content = data.content;
     note.color = data.color;
+
+    this.noteUpdated = true;
+    this.saveSubject.next(note);
   }
 
-  public async onSave(note: Note): Promise<void> {
+  public async update(note: Note): Promise<void> {
     await this.noteService.update(note);
   }
 
@@ -102,5 +121,13 @@ export class NoteComponent implements OnInit {
 
   public processDisplayList(): void {
     this.displayList = (this.formData?.search) ? this.searchNotes : this.notes;
+  }
+
+  public subscribeSave(): void {
+    this.saveSubscriber = this.saveSubject
+      .pipe(debounceTime(2000))
+      .subscribe((note) => {
+        this.update(note);
+      });
   }
 }

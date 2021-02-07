@@ -20,15 +20,13 @@ export class NotePreviewComponent implements OnInit, OnDestroy {
   }
 
   @Output() public onUpdate = new EventEmitter<{ title: string, content: string, color: string }>();
-  @Output() public onSave = new EventEmitter<Note>();
   @Output() public onRemove = new EventEmitter<boolean>();
 
   public _data: Note;
   public edit: boolean;
   public formGroup: FormGroup;
   public colors: string[];
-  public formGroupUpdateSubscriber: Subscription;
-  public formGroupSaveSubscriber: Subscription;
+  public formGroupSubscriber: Subscription;
 
   constructor() {
     //
@@ -48,8 +46,7 @@ export class NotePreviewComponent implements OnInit, OnDestroy {
   }
 
   public ngOnDestroy(): void {
-    this.formGroupUpdateSubscriber.unsubscribe();
-    this.formGroupSaveSubscriber.unsubscribe();
+    this.formGroupSubscriber.unsubscribe();
   }
 
   public buildFormGroup(): void {
@@ -59,15 +56,9 @@ export class NotePreviewComponent implements OnInit, OnDestroy {
       color: new FormControl(this._data.color),
     });
 
-    this.formGroupUpdateSubscriber = this.formGroup.valueChanges
+    this.formGroupSubscriber = this.formGroup.valueChanges
       .subscribe(() => {
         this.onUpdate.emit(this.formGroup.value);
-      });
-
-    this.formGroupSaveSubscriber = this.formGroup.valueChanges
-      .pipe(debounceTime(500))
-      .subscribe(() => {
-        this.onSave.emit(this.formGroup.value);
       });
   }
 
