@@ -1,22 +1,22 @@
 <div class="preview" [ngClass]="_data.color">
-    <div class="flex mt-24 mb-24" style="align-items: end;">
+    <div class="flex mt-24 pb-24" style="align-items: end;">
         <div class="date bold opacity-8" style="font-size: 13px;">{{_data.dateString}}</div>
     </div>
 
     <div style="position: relative; z-index: 1;">
         <div style="position: absolute; z-index: -1; top: 0; left: 0;" class="opacity-3 title" *ngIf="isEmptyTitle">Title</div>
-        <div class="title" contenteditable="true" (input)="onTitleChange($event.target)">{{_data.title}}</div>
+        <div class="title" contenteditable="true" (keydown.enter)="executeFunction($event)" (input)="onTitleChange($event.target)">{{title}}</div>
     </div>
 
     <div style="position: relative; z-index: 1;">
         <div style="position: absolute; z-index: -1; top: 0; left: 0;" class="opacity-3 content" *ngIf="isEmptyContent">Content</div>
-        <p class="content" contenteditable="true" (input)="onContentChange($event.target)" [innerHTML]="_data.content" style="outline: none;"></p>
+        <p class="content" contenteditable="true" (input)="onContentChange($event.target)" [innerHTML]="content" style="outline: none;"></p>
     </div>
 
     <div class="flex mb-24" style="margin-top: 80px">
-        <ng-container *ngFor="let color of colors">
-            <div class="pellet mr-6" [ngClass]="color" (click)="updateColor(color)">
-                <i class="icon icon-check" *ngIf="color === _data.color"></i>
+        <ng-container *ngFor="let item of colors">
+            <div class="pellet mr-6" [ngClass]="item" (click)="updateColor(item)">
+                <i class="icon icon-check" *ngIf="color === item"></i>
             </div>
         </ng-container>
 

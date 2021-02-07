@@ -7,7 +7,7 @@ import { Question } from '../question/question';
 import { NoteService } from './note.service';
 import * as Global from '../global/global';
 import { Subject, Subscription } from 'rxjs';
-import { debounceTime, takeUntil } from 'rxjs/operators';
+import { debounceTime } from 'rxjs/operators';
 
 @Component({
   selector: 'app-note',
@@ -16,12 +16,14 @@ import { debounceTime, takeUntil } from 'rxjs/operators';
 })
 export class NoteComponent implements OnInit {
   public questions: Question[];
-  public formData: { [key: string]: any };
   public displayList: Note[];
   public notes: Note[];
   public searchNotes: Note[];
+  public searchTerm: string;
   public limit: number;
   public offset: number;
+  public notesTotal: number;
+  public searchNotesTotal: number;
   public note: Note;
 
   public noteUpdated: boolean;
@@ -43,20 +45,30 @@ export class NoteComponent implements OnInit {
   }
 
   public async pullAll(): Promise<void> {
-    const notes = await this.noteService.pullAll({limit: this.limit, offset: this.offset, search: this.formData?.search});
-    this.processNotes(notes.data);
+    const data = await this.noteService.pullAll({limit: this.limit, offset: this.offset, search: this.searchTerm});
+    this.processNotes(data);
     this.processDisplayList();
   }
 
-  public processNotes(notes: Note[]): void {
-    for (const note of notes) {
+  public processNotes(data: { total: number, data: Note[] }): void {
+    for (const note of data.data) {
       note.dateString = moment(note.date).format('ddd DD MMM, HH:mm');
     }
 
-    if (this.formData?.search) {
-      this.searchNotes = notes;
+    if (this.searchTerm) {
+      this.searchNotesTotal = data.total;
+      if (this.offset) {
+        this.searchNotes.push(...data.data);
+      } else {
+        this.searchNotes = data.data;
+      }
     } else {
-      this.notes = notes;
+      this.notesTotal = data.total;
+      if (this.offset) {
+        this.notes.push(...data.data);
+      } else {
+        this.notes = data.data;
+      }
     }
   }
 
@@ -69,13 +81,13 @@ export class NoteComponent implements OnInit {
   public detail(note: Note): void {
     if (this.note && this.noteUpdated) { // Fire update before change note
       this.save(this.note);
+      this.noteUpdated = false;
     }
 
     if (this.saveSubscriber && !this.saveSubscriber.closed) {
       this.saveSubscriber.unsubscribe();
     }
 
-    this.noteUpdated = false;
     this.subscribeSave();
     this.note = note;
   }
@@ -122,6 +134,8 @@ export class NoteComponent implements OnInit {
       dateString: currentDate.format('ddd DD MMM, HH:mm'),
     };
 
+    this.searchTerm = null;
+    this.processDisplayList();
     this.notes.unshift(note);
     this.detail(note);
   }
@@ -131,8 +145,10 @@ export class NoteComponent implements OnInit {
   }
 
   public onValid(data): void {
-    this.formData = data;
-    if (Global.isEmpty(this.formData?.search)) {
+    this.limit = 20;
+    this.offset = 0;
+    this.searchTerm = data?.search;
+    if (Global.isEmpty(this.searchTerm)) {
       this.processDisplayList();
       return;
     }
@@ -141,7 +157,7 @@ export class NoteComponent implements OnInit {
   }
 
   public processDisplayList(): void {
-    this.displayList = (this.formData?.search) ? this.searchNotes : this.notes;
+    this.displayList = (this.searchTerm) ? this.searchNotes : this.notes;
   }
 
   public subscribeSave(): void {
@@ -149,6 +165,24 @@ export class NoteComponent implements OnInit {
       .pipe(debounceTime(2000))
       .subscribe((note) => {
         this.save(note);
+        this.noteUpdated = false;
       });
+  }
+
+  public nextPage(): void {
+    this.offset = this.displayList?.length;
+    this.pullAll();
+  }
+
+  public onVisible(): void {
+    this.checkNextPage();
+  }
+
+  public checkNextPage(): void {
+    if (this.searchTerm && this.displayList?.length < this.searchNotesTotal) {
+      this.nextPage();
+    } else if (!this.searchTerm && this.displayList?.length < this.notesTotal) {
+      this.nextPage();
+    }
   }
 }

@@ -13,7 +13,7 @@ export class NoteService {
     //
   }
 
-  public async pullAll(options: { search: any, offset: number, limit: number }): Promise<{ limit: number, data: Note[] }> {
+  public async pullAll(options: { search: any, offset: number, limit: number }): Promise<{ total: number, data: Note[] }> {
     const optionsQuery: Request = {
       url: `/api/note`,
       header: {
@@ -29,7 +29,7 @@ export class NoteService {
     const data: any = await this.requestService.get(optionsQuery).toPromise();
 
     return {
-      limit: data.data.limit,
+      total: data.data.total,
       data: data.data.data,
     };
   }
@@ -63,7 +63,6 @@ export class NoteService {
     };
 
     const data = await this.requestService.post(optionsQuery).toPromise();
-    console.log(data);
     return data.data;
   }
 

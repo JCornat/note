@@ -16,7 +16,15 @@ export class NotePreviewComponent implements OnInit, OnDestroy {
       ...data,
     };
 
-    this.updateFormData();
+    this.title = ' '; // Force contentEditable reset
+    this.content = ' '; // Force contentEditable reset
+
+    setTimeout(() => {
+      this.title = this._data.title;
+      this.content = this._data.content;
+      this.color = this._data.color;
+      this.updateFormData();
+    });
   }
 
   @Output() public onUpdate = new EventEmitter<{ title: string, content: string, color: string }>();
@@ -24,6 +32,9 @@ export class NotePreviewComponent implements OnInit, OnDestroy {
 
   public _data: Note;
   public edit: boolean;
+  public title: string;
+  public content: string;
+  public color: string;
   public isEmptyTitle: boolean;
   public isEmptyContent: boolean;
   public formGroup: FormGroup;
@@ -73,15 +84,23 @@ export class NotePreviewComponent implements OnInit, OnDestroy {
 
   public updateFormData(): void {
     if (Global.isEmpty(this.formGroup)) {
+      console.log('return !');
       return;
     }
 
     this.formGroup.patchValue(this._data, {emitEvent: false});
+    this.isEmptyTitle = Global.isEmpty(this.formGroup.get('title').value);
+    this.isEmptyContent = Global.isEmpty(this.formGroup.get('content').value);
   }
 
   public onTitleChange(event): void {
-    const content = (event.innerText && event.innerHTML !== '<br>') ? event.innerHTML : null;
+    const content = (event.innerText) ? event.innerText : null;
     this.formGroup.get('title').setValue(content);
+  }
+
+  public executeFunction(event): void {
+    event.preventDefault();
+    event.stopPropagation();
   }
 
   public onContentChange(event): void {
