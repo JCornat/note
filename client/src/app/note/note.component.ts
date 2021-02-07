@@ -1,9 +1,11 @@
 import { Component, OnInit } from '@angular/core';
+import * as moment from 'moment';
+import { Router } from '@angular/router';
+
 import { Note } from './note';
 import { Question } from '../question/question';
 import { NoteService } from './note.service';
 import * as Global from '../global/global';
-import { Router } from '@angular/router';
 
 @Component({
   selector: 'app-note',
@@ -18,6 +20,7 @@ export class NoteComponent implements OnInit {
   public searchNotes: Note[];
   public limit: number;
   public offset: number;
+  public note: Note;
 
   constructor(
     public noteService: NoteService,
@@ -40,6 +43,11 @@ export class NoteComponent implements OnInit {
   }
 
   public processNotes(notes: Note[]): void {
+    for (const note of notes) {
+      note.date = moment();
+      note.dateString = note.date.format('ddd DD MMM, HH:mm');
+    }
+
     if (this.formData?.search) {
       this.searchNotes = notes;
     } else {
@@ -54,7 +62,13 @@ export class NoteComponent implements OnInit {
   }
 
   public detail(note: Note): void {
-    this.navigateUpdate(note._id);
+    this.note = note;
+  }
+
+  public onUpdate(data: Note, note: Note): void {
+    note.title = data.title;
+    note.content = data.content;
+    note.color = data.color;
   }
 
   public navigateAdd(): void {

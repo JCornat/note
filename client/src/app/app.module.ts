@@ -28,6 +28,8 @@ import { LoginComponent } from './login/login.component';
 import { NoteComponent } from './note/note.component';
 import { NoteAddComponent } from './note/add/add.component';
 import { NoteUpdateComponent } from './note/update/update.component';
+import { NoteItemComponent } from './note/item/item.component';
+import { NotePreviewComponent } from './note/preview/preview.component';
 
 @NgModule({
   declarations: [
@@ -55,6 +57,8 @@ import { NoteUpdateComponent } from './note/update/update.component';
     NoteComponent,
     NoteAddComponent,
     NoteUpdateComponent,
+    NoteItemComponent,
+    NotePreviewComponent,
   ],
   imports: [
     BrowserModule,

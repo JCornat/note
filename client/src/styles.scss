@@ -22,83 +22,88 @@
 @include build-padding();
 
 :root {
-  --movie-width: 250px;
-  --movie-height: calc(var(--movie-width) * 1.5);
+  --note-width: 250px;
+  --note-height: calc(var(--note-width) * 1.5);
 }
 
 @media (max-width: $minMedium) {
   :root {
-    --movie-width: 200px;
+    --note-width: 200px;
   }
 }
 
 @media (max-width: $minSmall) {
   :root {
-    --movie-width: 150px;
+    --note-width: 150px;
   }
 }
 
-.movies {
-  display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(var(--movie-width), 1fr));
-  grid-gap: 16px;
-  padding: 16px;
+.notes-container {
+  display: flex;
+
+  .notes {
+    flex: 1;
+    max-width: min(500px, 30vw);
+    min-width: 350px;
+    height: 100vh;
+    overflow-y: auto;
+
+    /* Hide scrollbar for IE, Edge and Firefox */
+    -ms-overflow-style: none;  /* IE and Edge */
+    scrollbar-width: none;  /* Firefox */
+
+    /* Hide scrollbar for Chrome, Safari and Opera */
+    ::-webkit-scrollbar {
+      display: none;
+    }
+  }
+
+  @media (max-width: $minMedium) {
+    .notes {
+      max-width: none;
+    }
+
+    .preview {
+      display: none;
+    }
+  }
+
+  .preview {
+    flex: 1;
+    background-color: blue;
+    background: linear-gradient(45deg, $indigo900 30%, $indigo800 100%);
+    padding: 32px;
+    height: 100vh;
+    position: relative;
+  }
 }
 
-.movie {
-  position: relative;
-  display: block;
-  width: 100%;
+.note {
+  @include variable(background-color, rgb(var(--surface)), #000);
+  @include variable(color, rgb(var(--on-surface)), #000);
+  cursor: pointer;
 
-  .poster-container {
-    border-radius: 8px;
-    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
-    margin-bottom: 12px;
-    overflow: hidden;
+  .ribbon {
+    position: absolute;
+    top: 0;
+    bottom: 0;
+    left: 0;
+    width: 4px;
+    background-color: $indigo900;
+  }
 
-    .poster {
-      height: var(--movie-height);
-      width: 100%;
-      background-position: center;
-      background-repeat: no-repeat;
-      background-size: cover;
-
-      &:before {
-        content: "";
-      }
-    }
+  .title {
+    font-size: 16px;
+    margin-bottom: 6px;
+    opacity: 0.9;
+    @include text-ellipsis();
   }
 
   .content {
-    @include variable(color, rgb(var(--on-background)), #000);
-    text-shadow: 0 0 10px #000;
-    text-align: center;
-
-    .title {
-      font-size: 16px;
-      margin-bottom: 6px;
-      opacity: 0.9;
-    }
-
-    .year {
-      font-size: 12px;
-      opacity: 0.6;
-    }
-  }
-
-  &.blur {
-    .poster {
-      filter: blur(8px);
-      -webkit-filter: blur(8px);
-    }
-
-    .content {
-      position: absolute;
-      left: 0;
-      right: 0;
-      top: 40%;
-      text-shadow: 0 2px 2px #000;
-    }
+    font-size: 14px;
+    opacity: 0.6;
+    height: 14px;
+    @include text-ellipsis();
   }
 }
 
