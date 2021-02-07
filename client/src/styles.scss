@@ -70,8 +70,6 @@
 
   .preview {
     flex: 1;
-    background-color: blue;
-    background: linear-gradient(45deg, $indigo900 30%, $indigo800 100%);
     padding: 32px;
     height: 100vh;
     position: relative;
@@ -85,6 +83,38 @@
     ::-webkit-scrollbar {
       display: none;
     }
+
+    &.blue {
+      background-color: blue;
+      background: linear-gradient(45deg, $indigo900 30%, $indigo800 100%);
+    }
+
+    &.red {
+      background-color: blue;
+      background: linear-gradient(45deg, $red900 30%, $red800 100%);
+    }
+
+    &.orange {
+      background-color: blue;
+      background: linear-gradient(45deg, $orange900 30%, $orange800 100%);
+    }
+
+    &.green {
+      background-color: blue;
+      background: linear-gradient(45deg, $green900 30%, $green800 100%);
+    }
+
+    &.black {
+      background-color: blue;
+      background: linear-gradient(45deg, $grey900 30%, $grey800 100%);
+    }
+
+    &.white {
+      background-color: blue;
+      background: linear-gradient(45deg, $white 30%, $grey200 100%);
+
+      color: black;
+    }
   }
 }
 
@@ -92,19 +122,43 @@
   @include variable(background-color, rgb(var(--surface)), #000);
   @include variable(color, rgb(var(--on-surface)), #000);
   cursor: pointer;
+  overflow: hidden;
 
   .ribbon {
     position: absolute;
     top: 0;
     bottom: 0;
     left: 0;
-    width: 4px;
-    background-color: $indigo900;
+    width: 6px;
+
+    &.blue {
+      background-color: $indigo900;
+    }
+
+    &.red {
+      background-color: $red900;
+    }
+
+    &.orange {
+      background-color: $orange900;
+    }
+
+    &.green {
+      background-color: $green900;
+    }
+
+    &.black {
+      background-color: $grey900;
+    }
+
+    &.white {
+      background-color: $white;
+    }
   }
 
   .title {
-    font-size: 16px;
-    margin-bottom: 6px;
+    font-size: 18px;
+    margin-bottom: 4px;
     opacity: 0.9;
     @include text-ellipsis();
   }

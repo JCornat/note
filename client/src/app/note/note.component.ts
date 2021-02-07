@@ -46,6 +46,7 @@ export class NoteComponent implements OnInit {
     for (const note of notes) {
       note.date = moment();
       note.dateString = note.date.format('ddd DD MMM, HH:mm');
+      note.color = 'blue';
     }
 
     if (this.formData?.search) {
