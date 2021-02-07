@@ -29,6 +29,7 @@ import { NoteComponent } from './note/note.component';
 import { NoteItemComponent } from './note/item/item.component';
 import { NotePreviewComponent } from './note/preview/preview.component';
 import { VisibleComponent } from './visible/visible.component';
+import { C7zDragDropDirective } from './drag-drop/drag-drop.directive';
 
 @NgModule({
   declarations: [
@@ -57,6 +58,7 @@ import { VisibleComponent } from './visible/visible.component';
     NoteItemComponent,
     NotePreviewComponent,
     VisibleComponent,
+    C7zDragDropDirective,
   ],
   imports: [
     BrowserModule,

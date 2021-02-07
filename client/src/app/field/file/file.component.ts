@@ -23,7 +23,6 @@ export class FieldFileComponent extends SharedFieldComponent implements OnInit {
   public imgURL: string;
   public message: string;
 
-
   constructor(
     public dynamicFormService: DynamicFormService,
     public validatorService: ValidatorService,
@@ -120,7 +119,7 @@ export class FieldFileComponent extends SharedFieldComponent implements OnInit {
     this.progress = Math.round(event.loaded / event.total * 100);
   }
 
-  private makeFileRequest(url: string, file: File) {
+  private makeFileRequest(url: string, file: File): void {
     const formData: FormData = new FormData();
     formData.append('uploads[]', file, file.name);
 
@@ -192,7 +191,7 @@ export class FieldFileComponent extends SharedFieldComponent implements OnInit {
     }
   }
 
-  public preview(file) {
+  public preview(file): void {
     this.imgURL = file;
   }
 

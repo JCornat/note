@@ -1,22 +1,41 @@
-<div class="preview" [ngClass]="_data.color">
+<div class="preview" [ngClass]="_data.color" c7zDragDrop (onFileDropped)="onFileDropped($event)" (onDraggedOver)="dragOver($event)" style="position:relative;">
     <div class="flex mt-24 pb-24" style="align-items: end;">
         <div class="date bold opacity-8" style="font-size: 13px;">{{_data.dateString}}</div>
     </div>
 
     <div style="position: relative; z-index: 1;">
         <div style="position: absolute; z-index: -1; top: 0; left: 0;" class="opacity-3 title" *ngIf="isEmptyTitle">Title</div>
-        <div class="title" contenteditable="true" (keydown.enter)="executeFunction($event)" (input)="onTitleChange($event.target)">{{title}}</div>
+        <div class="title" contenteditable="true" (keydown.enter)="preventDefault($event)" (input)="onTitleChange($event.target)" #titleElement></div>
     </div>
 
     <div style="position: relative; z-index: 1;">
         <div style="position: absolute; z-index: -1; top: 0; left: 0;" class="opacity-3 content" *ngIf="isEmptyContent">Content</div>
-        <p class="content" contenteditable="true" (input)="onContentChange($event.target)" [innerHTML]="content" style="outline: none;"></p>
+        <p class="content" contenteditable="true" (input)="onContentChange($event.target)" style="outline: none;" #contentElement></p>
     </div>
+
+    <!--    <div class="mt-32">-->
+    <!--        <ng-container>-->
+    <!--            <div class="flex">-->
+    <!--                <i class="icon icon-check-box-outline-blank" style="font-size: 22px;"></i>-->
+    <!--                <p contenteditable="true" (keydown.enter)="preventDefault($event)">Nouvel item</p>-->
+    <!--            </div>-->
+    <!--        </ng-container>-->
+    <!--    </div>-->
+
+    <ng-container *ngIf="images">
+        <div class="mt-32 images-container">
+            <ng-container *ngFor="let image of images">
+                <div class="mb-16">
+                    <img [src]="image" class="shadow-md" alt="Image">
+                </div>
+            </ng-container>
+        </div>
+    </ng-container>
 
     <div class="flex mb-24" style="margin-top: 80px">
         <ng-container *ngFor="let item of colors">
             <div class="pellet mr-6" [ngClass]="item" (click)="updateColor(item)">
-                <i class="icon icon-check" *ngIf="color === item"></i>
+                <i class="icon icon-check" *ngIf="_data.color === item"></i>
             </div>
         </ng-container>
 
@@ -27,4 +46,16 @@
         <div class="fill"></div>
         <c7z-button class="secondary red" icon="delete" (onClick)="remove()"></c7z-button>
     </div>
+
+    <ng-container *ngIf="isDragover || isSending">
+        <div class="upload-container">
+            <ng-container *ngIf="isDragover">
+                <i class="icon icon-cloud-upload"></i>
+            </ng-container>
+
+            <ng-container *ngIf="isSending">
+                <i class="icon icon-sync spin"></i>
+            </ng-container>
+        </div>
+    </ng-container>
 </div>

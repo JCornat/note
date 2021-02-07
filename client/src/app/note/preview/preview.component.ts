@@ -1,28 +1,32 @@
-import { Component, EventEmitter, Input, OnDestroy, OnInit, Output } from '@angular/core';
+import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { Note } from '../note';
 import { FormControl, FormGroup } from '@angular/forms';
 import * as Global from '../../global/global';
 import { Subscription } from 'rxjs';
 import { debounceTime } from 'rxjs/operators';
+import { SERVER_URL } from '../../config/config';
+import { RequestService } from '../../request/request.service';
 
 @Component({
   selector: 'note-preview',
   templateUrl: './preview.component.html',
   styleUrls: ['./preview.component.scss']
 })
-export class NotePreviewComponent implements OnInit, OnDestroy {
+export class NotePreviewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() set data(data: Note) {
     this._data = {
       ...data,
     };
 
-    this.title = ' '; // Force contentEditable reset
-    this.content = ' '; // Force contentEditable reset
+    if (this.titleElement?.nativeElement) {
+      this.titleElement.nativeElement.innerText = this._data.title;
+    }
+
+    if (this.contentElement?.nativeElement) {
+      this.contentElement.nativeElement.innerHTML = this._data.content;
+    }
 
     setTimeout(() => {
-      this.title = this._data.title;
-      this.content = this._data.content;
-      this.color = this._data.color;
       this.updateFormData();
     });
   }
@@ -30,19 +34,28 @@ export class NotePreviewComponent implements OnInit, OnDestroy {
   @Output() public onUpdate = new EventEmitter<{ title: string, content: string, color: string }>();
   @Output() public onRemove = new EventEmitter<boolean>();
 
+  @ViewChild('titleElement') titleElement: ElementRef<HTMLElement>;
+  @ViewChild('contentElement') contentElement: ElementRef<HTMLElement>;
+
   public _data: Note;
+  public progress: number;
+  public isSending: boolean;
+  public uploadError: boolean;
+  public currentFile: File;
   public edit: boolean;
-  public title: string;
-  public content: string;
-  public color: string;
+  public isDragover: boolean;
   public isEmptyTitle: boolean;
   public isEmptyContent: boolean;
   public formGroup: FormGroup;
   public colors: string[];
+  public images: string[];
   public formGroupSubscriber: Subscription;
+  public xhr: XMLHttpRequest;
 
-  constructor() {
-    //
+  constructor(
+    public requestService: RequestService,
+  ) {
+    this.images = [];
   }
 
   public ngOnInit(): void {
@@ -56,6 +69,11 @@ export class NotePreviewComponent implements OnInit, OnDestroy {
     ];
 
     this.buildFormGroup();
+  }
+
+  public ngAfterViewInit(): void {
+    this.titleElement.nativeElement.innerText = this._data.title;
+    this.contentElement.nativeElement.innerHTML = this._data.content;
   }
 
   public ngOnDestroy(): void {
@@ -98,7 +116,7 @@ export class NotePreviewComponent implements OnInit, OnDestroy {
     this.formGroup.get('title').setValue(content);
   }
 
-  public executeFunction(event): void {
+  public preventDefault(event): void {
     event.preventDefault();
     event.stopPropagation();
   }
@@ -115,5 +133,34 @@ export class NotePreviewComponent implements OnInit, OnDestroy {
 
   public remove(): void {
     this.onRemove.emit(true);
+  }
+
+  public async onFileDropped(file: File): Promise<void> {
+    this.isDragover = false;
+    const url = await this.uploadFile(file);
+    this.images.push(url);
+  }
+
+  public dragOver(event: boolean): void {
+    this.isDragover = event;
+  }
+
+  public async uploadFile(file: File): Promise<string> {
+    this.isSending = true;
+    this.uploadError = false;
+
+    let url: string;
+
+    try {
+      const data = await this.requestService.post({url: SERVER_URL + '/api/file', body: {file}, header: {responseType: 'text'}}).toPromise();
+      url = data.body;
+    } catch (error) {
+      this.uploadError = true;
+      throw new Error(error);
+    } finally {
+      this.isSending = false;
+    }
+
+    return url;
   }
 }

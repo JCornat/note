@@ -98,6 +98,13 @@
       margin-bottom: 32px;
     }
 
+    .images-container {
+      img {
+        border-radius: 8px;
+        max-width: 100%;
+      }
+    }
+
     &.blue {
       background-color: blue;
       background: linear-gradient(45deg, $indigo900 30%, $indigo800 100%);
@@ -255,5 +262,23 @@
     i {
       color: #000;
     }
+  }
+}
+
+.upload-container {
+  position:fixed;
+  z-index: 2;
+  top: 0;
+  left: 0;
+  right: 0;
+  height: 100vh;
+  background-color: rgba(0,0,0,0.5);
+  pointer-events: none;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+
+  i {
+    font-size: 100px;
   }
 }
