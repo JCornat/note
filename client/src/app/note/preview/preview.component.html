@@ -1,0 +1,9 @@
+<div>
+    <div class="flex mt-24 mb-24" style="align-items: end;">
+        <div class="date bold opacity-8" style="font-size: 13px;">{{_data.dateString}}</div>
+    </div>
+
+    <div class="title bold mb-32" contenteditable="true" (input)="onTitleChange($event.target)" style="outline: none; padding-top: 3px; padding-bottom: 3px; padding-left: 1px; font-size: 30px; line-height: 1;">{{_data.title}}</div>
+
+    <p class="content" contenteditable="true" (input)="onContentChange($event.target)" [innerHTML]="_data.content" style="outline: none;"></p>
+</div>
