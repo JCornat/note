@@ -1,0 +1,15 @@
+<div class="mx-16 mt-16 flex" style="justify-content: end;">
+    <div style="max-width: 400px; width: 100%;">
+        <dynamic-form-section [questions]="questions" (onValid)="onValid($event)"></dynamic-form-section>
+    </div>
+
+    <div class="ml-8">
+        <c7z-button class="secondary grey" icon="add" (onClick)="navigateAdd()"></c7z-button>
+    </div>
+</div>
+
+<ng-container *ngFor="let note of displayList">
+    <div (click)="detail(note)">
+        {{note | json}}
+    </div>
+</ng-container>

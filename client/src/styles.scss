@@ -1,0 +1,127 @@
+@import 'assets/styles/abstract/color';
+@import 'assets/styles/abstract/font';
+@import 'assets/styles/abstract/screen';
+@import 'assets/styles/abstract/shadow';
+@import 'assets/styles/abstract/icon';
+@import 'assets/styles/abstract/variables';
+@import 'assets/styles/abstract/functions';
+@import 'assets/styles/abstract/flex';
+@import 'assets/styles/abstract/mixins';
+@import 'assets/styles/abstract/animations';
+
+@import "assets/styles/base/reset";
+@import "assets/styles/base/base";
+
+@import "assets/styles/layout/form";
+@import "assets/styles/component/button";
+@import "assets/styles/component/card";
+@import "assets/styles/component/row";
+@import "assets/font/icon";
+
+@include build-margin();
+@include build-padding();
+
+:root {
+  --movie-width: 250px;
+  --movie-height: calc(var(--movie-width) * 1.5);
+}
+
+@media (max-width: $minMedium) {
+  :root {
+    --movie-width: 200px;
+  }
+}
+
+@media (max-width: $minSmall) {
+  :root {
+    --movie-width: 150px;
+  }
+}
+
+.movies {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(var(--movie-width), 1fr));
+  grid-gap: 16px;
+  padding: 16px;
+}
+
+.movie {
+  position: relative;
+  display: block;
+  width: 100%;
+
+  .poster-container {
+    border-radius: 8px;
+    box-shadow: 0px 2px 4px -1px rgba(0, 0, 0, 0.2), 0px 4px 5px 0px rgba(0, 0, 0, 0.14), 0px 1px 10px 0px rgba(0, 0, 0, 0.12);
+    margin-bottom: 12px;
+    overflow: hidden;
+
+    .poster {
+      height: var(--movie-height);
+      width: 100%;
+      background-position: center;
+      background-repeat: no-repeat;
+      background-size: cover;
+
+      &:before {
+        content: "";
+      }
+    }
+  }
+
+  .content {
+    @include variable(color, rgb(var(--on-background)), #000);
+    text-shadow: 0 0 10px #000;
+    text-align: center;
+
+    .title {
+      font-size: 16px;
+      margin-bottom: 6px;
+      opacity: 0.9;
+    }
+
+    .year {
+      font-size: 12px;
+      opacity: 0.6;
+    }
+  }
+
+  &.blur {
+    .poster {
+      filter: blur(8px);
+      -webkit-filter: blur(8px);
+    }
+
+    .content {
+      position: absolute;
+      left: 0;
+      right: 0;
+      top: 40%;
+      text-shadow: 0 2px 2px #000;
+    }
+  }
+}
+
+.thin {
+  font-weight: $thin;
+}
+
+.light {
+  font-weight: $light;
+}
+
+.regular {
+  font-weight: $regular;
+}
+
+.medium {
+  font-weight: $medium;
+}
+
+.bold {
+  font-weight: $bold;
+}
+
+.weightBlack {
+  font-weight: $weightBlack;
+}
