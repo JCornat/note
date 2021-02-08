@@ -6,6 +6,7 @@ App for note taking
 
 ![Capture](https://i.imgur.com/rTA7fwv.png)
 
+![Capture](https://i.imgur.com/44yPzus.png)
 
 ## Search on title & content
 
