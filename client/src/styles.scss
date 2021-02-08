@@ -56,20 +56,22 @@
     ::-webkit-scrollbar {
       display: none;
     }
-  }
 
-  @media (max-width: $minMedium) {
-    .notes {
+    &.is-mobile {
       max-width: none;
     }
 
-    .preview-container {
+    &.disabled {
       display: none;
     }
   }
 
   .preview-container {
     flex: 1;
+
+    &.disabled {
+      display: none;
+    }
   }
 
   .preview {
@@ -163,7 +165,7 @@
         background-color: rgba($black, 0.3);
         color: rgba($white, 0.8);
         cursor: pointer;
-        margin-bottom: 8px;
+        margin-top: 8px;
         outline: none;
         box-shadow: $shadowExtraSmall;
 

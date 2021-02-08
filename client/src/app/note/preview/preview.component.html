@@ -1,5 +1,5 @@
 <div class="preview" [ngClass]="_data.color" c7zDragDrop (onFileDropped)="onFileDropped($event)" (onDraggedOver)="dragOver($event)" style="position:relative;">
-    <div class="close" (click)="closeNote()">
+    <div class="close" (click)="closeNote()" *ngIf="isMobile">
         <i class="icon icon-close"></i>
     </div>
 

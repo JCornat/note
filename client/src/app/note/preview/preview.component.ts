@@ -5,6 +5,7 @@ import * as Global from '../../global/global';
 import { Subscription } from 'rxjs';
 import { SERVER_URL } from '../../config/config';
 import { RequestService } from '../../request/request.service';
+import { ScreenService } from '../../screen/screen.service';
 
 @Component({
   selector: 'note-preview',
@@ -13,6 +14,10 @@ import { RequestService } from '../../request/request.service';
 })
 export class NotePreviewComponent implements OnInit, AfterViewInit, OnDestroy {
   @Input() set data(data: Note) {
+    if (!data) {
+      return;
+    }
+
     this._data = {
       ...data,
     };
@@ -49,9 +54,12 @@ export class NotePreviewComponent implements OnInit, AfterViewInit, OnDestroy {
   public formGroup: FormGroup;
   public colors: string[];
   public formGroupSubscriber: Subscription;
+  public resizeSubscriber: Subscription;
+  public isMobile: boolean;
 
   constructor(
     public requestService: RequestService,
+    public screenService: ScreenService,
   ) {
     //
   }
@@ -67,6 +75,8 @@ export class NotePreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     ];
 
     this.buildFormGroup();
+    this.subscribeResize();
+    this.checkIsMobile();
   }
 
   public ngAfterViewInit(): void {
@@ -188,5 +198,15 @@ export class NotePreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public closeNote(): void {
     this.onClose.emit(true);
+  }
+
+  public subscribeResize(): void {
+    this.resizeSubscriber = this.screenService.widthResizeObservable.subscribe(() => {
+      this.checkIsMobile();
+    });
+  }
+
+  public checkIsMobile(): void {
+    this.isMobile = (this.screenService.isMobile() || this.screenService.isTablet());
   }
 }

@@ -1,13 +1,14 @@
 import { Component, OnInit } from '@angular/core';
 import * as moment from 'moment';
 import { Router } from '@angular/router';
+import { Subject, Subscription } from 'rxjs';
+import { debounceTime } from 'rxjs/operators';
 
 import { Note } from './note';
 import { Question } from '../question/question';
 import { NoteService } from './note.service';
 import * as Global from '../global/global';
-import { Subject, Subscription } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
+import { ScreenService } from '../screen/screen.service';
 
 @Component({
   selector: 'app-note',
@@ -29,10 +30,13 @@ export class NoteComponent implements OnInit {
   public noteUpdated: boolean;
   private saveSubject = new Subject<Note>();
   public saveSubscriber: Subscription;
+  public resizeSubscriber: Subscription;
+  public isMobile: boolean;
 
   constructor(
     public noteService: NoteService,
     public router: Router,
+    public screenService: ScreenService,
   ) {
     //
   }
@@ -41,6 +45,8 @@ export class NoteComponent implements OnInit {
     this.limit = 20;
     this.offset = 0;
     this.pullAll();
+    this.subscribeResize();
+    this.checkIsMobile();
     this.buildQuestions();
   }
 
@@ -124,6 +130,16 @@ export class NoteComponent implements OnInit {
   }
 
   public async onClose(note: Note): Promise<void> {
+    if (this.note && this.noteUpdated) { // Fire update before change note
+      this.save(this.note);
+      this.noteUpdated = false;
+    }
+
+    if (this.saveSubscriber && !this.saveSubscriber.closed) {
+      this.saveSubscriber.unsubscribe();
+    }
+
+    this.subscribeSave();
     this.note = null;
   }
 
@@ -188,5 +204,15 @@ export class NoteComponent implements OnInit {
     } else if (!this.searchTerm && this.displayList?.length < this.notesTotal) {
       this.nextPage();
     }
+  }
+
+  public subscribeResize(): void {
+    this.resizeSubscriber = this.screenService.widthResizeObservable.subscribe(() => {
+      this.checkIsMobile();
+    });
+  }
+
+  public checkIsMobile(): void {
+    this.isMobile = (this.screenService.isMobile() || this.screenService.isTablet());
   }
 }
