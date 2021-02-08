@@ -1,5 +1,5 @@
 <div class="notes-container">
-    <div class="notes p-16" [ngClass]="{'is-mobile': isMobile, 'disabled': note && isMobile}">
+    <div class="notes" [ngClass]="{'is-mobile': isMobile, 'disabled': note && isMobile}">
         <div class="mb-16 flex" style="justify-content: end;">
             <div class="fill">
                 <dynamic-form-section [questions]="questions" (onValid)="onValid($event)"></dynamic-form-section>

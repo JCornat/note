@@ -26,13 +26,13 @@
   --note-height: calc(var(--note-width) * 1.5);
 }
 
-@media (max-width: $minMedium) {
+@media (max-width: $maxSmall) {
   :root {
     --note-width: 200px;
   }
 }
 
-@media (max-width: $minSmall) {
+@media (max-width: $maxExtraSmall) {
   :root {
     --note-width: 150px;
   }
@@ -42,6 +42,7 @@
   display: flex;
 
   .notes {
+    padding: 32px 24px;
     flex: 1;
     max-width: min(500px, 30vw);
     min-width: 350px;
@@ -71,9 +72,17 @@
       grid-template-columns: repeat(1, minmax(0, 1fr));
       grid-gap: 12px;
 
-      @media (min-width: $maxExtraSmall) and (max-width: $minMedium) {
+      @media (min-width: $maxExtraSmall) and (max-width: $maxSmall) {
         grid-template-columns: repeat(2, minmax(0, 1fr));
       }
+    }
+
+    @media (max-width: $maxSmall) {
+      padding: 24px;
+    }
+
+    @media (max-width: $maxExtraSmall) {
+      padding: 16px;
     }
   }
 
@@ -202,12 +211,39 @@
     }
 
     .close {
+      opacity: 0.7;
       position: relative;
       left: -5px;
 
       i {
         cursor: pointer;
         font-size: 30px;
+      }
+    }
+
+    @media (max-width: $maxSmall) {
+      padding: 24px;
+
+      .shortcut-container {
+        bottom: 24px;
+        right: 24px;
+      }
+
+      .close {
+        padding-top: 5px;
+      }
+    }
+
+    @media (max-width: $maxExtraSmall) {
+      padding: 16px;
+
+      .shortcut-container {
+        bottom: 16px;
+        right: 16px;
+      }
+
+      .close {
+        padding-top: 5px;
       }
     }
   }
