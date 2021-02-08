@@ -10,7 +10,7 @@
             </div>
         </div>
 
-        <div style="margin-bottom: 64px;">
+        <div class="notes-list">
             <ng-container *ngIf="displayList?.length > 0">
                 <ng-container *ngFor="let note of displayList">
                     <note-item [data]="note" (click)="detail(note)"></note-item>

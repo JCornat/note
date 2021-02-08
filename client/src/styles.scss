@@ -64,6 +64,17 @@
     &.disabled {
       display: none;
     }
+
+    .notes-list {
+      margin-bottom: 64px;
+      display: grid;
+      grid-template-columns: repeat(1, minmax(0, 1fr));
+      grid-gap: 12px;
+
+      @media (max-width: $minMedium) {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+      }
+    }
   }
 
   .preview-container {
