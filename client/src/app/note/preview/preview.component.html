@@ -14,6 +14,7 @@
         <button class="fontStyle" onclick="document.execCommand('italic',false,null);" title="Italicize Highlighted Text"><i>I</i></button>
         <button class="fontStyle" onclick="document.execCommand( 'bold',false,null);" title="Bold Highlighted Text"><b>B</b></button>
         <button class="fontStyle" onclick="document.execCommand( 'underline',false,null);"><u>U</u></button>
+        <c7z-button (onClick)="addCheckbox()"></c7z-button>
     </div>
 
     <!--    <div class="mt-32">-->
@@ -24,19 +25,6 @@
     <!--            </div>-->
     <!--        </ng-container>-->
     <!--    </div>-->
-
-    <ng-container *ngIf="_data.images?.length > 0">
-        <div class="mt-32 images-container">
-            <ng-container *ngFor="let image of _data.images; index as i">
-                <div class="mb-16">
-                    <div style="position: relative; display: inline;">
-                        <img [src]="image" class="shadow-md" alt="Image">
-                        <c7z-button class="raised grey" icon="delete" (onClick)="removeImage(i)" style="position: absolute; right: 8px; bottom: 12px;"></c7z-button>
-                    </div>
-                </div>
-            </ng-container>
-        </div>
-    </ng-container>
 
     <div class="flex mb-24" style="margin-top: 80px">
         <ng-container *ngFor="let item of colors">
@@ -64,4 +52,6 @@
             </ng-container>
         </div>
     </ng-container>
+
+    <input type="file" style="position: absolute; width: 1px; height: 1px; top: 10px; left: 10px; z-index: -200;" #inputFile (change)="selectedFile($event)">
 </div>

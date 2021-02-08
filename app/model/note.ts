@@ -69,7 +69,6 @@ export async function add(options: any): Promise<any> {
     title: options.title,
     content: options.content,
     color: options.color,
-    images: options.images,
     date: moment().format(),
     index,
   };
@@ -99,7 +98,6 @@ export async function update(options: any): Promise<any> {
     color: options.color,
     date: options.date,
     index: options.index,
-    images: options.images,
   };
 
   await collection.findOneAndUpdate({_id: new ObjectId(id)}, {$set: updateValue});

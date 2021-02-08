@@ -98,13 +98,6 @@
       margin-bottom: 32px;
     }
 
-    .images-container {
-      img {
-        border-radius: 8px;
-        max-width: 100%;
-      }
-    }
-
     &.blue {
       background-color: blue;
       background: linear-gradient(45deg, $indigo900 30%, $indigo800 100%);
@@ -140,6 +133,17 @@
     .title, .content {
       i {
         font-style: italic;
+      }
+    }
+
+    .content {
+      img {
+        border-radius: 8px;
+        max-width: 100%;
+        box-shadow: $shadowMedium;
+        display: block;
+        margin-bottom: 16px;
+        margin-top: 16px;
       }
     }
   }

@@ -35,6 +35,7 @@ export class NotePreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @ViewChild('titleElement') titleElement: ElementRef<HTMLElement>;
   @ViewChild('contentElement') contentElement: ElementRef<HTMLElement>;
+  @ViewChild('inputFile', {static: false}) public inputFile: ElementRef;
 
   public _data: Note;
   public isSending: boolean;
@@ -79,18 +80,10 @@ export class NotePreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isEmptyTitle = (Global.isEmpty(this._data.title));
     this.isEmptyContent = (Global.isEmpty(this._data.content));
 
-    const imageControl = [];
-    if (Global.isPopulated(this._data.images)) {
-      for (const image of this._data.images) {
-        imageControl.push(new FormControl(image));
-      }
-    }
-
     this.formGroup = new FormGroup({
       title: new FormControl(this._data.title),
       content: new FormControl(this._data.content),
       color: new FormControl(this._data.color),
-      images: new FormArray(imageControl),
     });
 
     this.formGroupSubscriber = this.formGroup.valueChanges
@@ -141,12 +134,7 @@ export class NotePreviewComponent implements OnInit, AfterViewInit, OnDestroy {
   public async onFileDropped(file: File): Promise<void> {
     this.isDragover = false;
     const url = await this.uploadFile(file);
-    if (Global.isEmpty(this._data.images)) {
-      this._data.images = [];
-    }
-
-    this._data.images.push(url);
-    (this.formGroup.controls.images as FormArray).push(new FormControl(url));
+    document.execCommand('insertImage', null, url);
   }
 
   public dragOver(event: boolean): void {
@@ -172,17 +160,18 @@ export class NotePreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     return url;
   }
 
-  public removeImage(index: number): void {
-    const res = [];
-    for (let i = 0; i < this._data.images.length; i++) {
-      if (i === index) {
-        continue;
-      }
+  public addCheckbox(): void {
+    this.inputFile.nativeElement.click();
+  }
 
-      res.push(this._data.images[i]);
+  public async selectedFile(event: any): Promise<void> {
+    const files = event.target.files;
+    if (Global.isEmpty(files)) {
+      return;
     }
 
-    this._data.images = res;
-    (this.formGroup.controls.images as FormArray).removeAt(index);
+    this.contentElement.nativeElement.focus();
+    const url = await this.uploadFile(files[0]);
+    document.execCommand('insertImage', null, url);
   }
 }
