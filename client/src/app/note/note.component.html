@@ -23,7 +23,7 @@
 
     <ng-container *ngIf="note">
         <div class="preview-container">
-            <note-preview [data]="note" (onUpdate)="onUpdate($event, note)" (onRemove)="onRemove(note)"></note-preview>
+            <note-preview [data]="note" (onUpdate)="onUpdate($event, note)" (onRemove)="onRemove(note)" (onClose)="onClose(note)"></note-preview>
         </div>
     </ng-container>
 </div>

@@ -32,6 +32,7 @@ export class NotePreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   @Output() public onUpdate = new EventEmitter<{ title: string, content: string, color: string }>();
   @Output() public onRemove = new EventEmitter<boolean>();
+  @Output() public onClose = new EventEmitter<boolean>();
 
   @ViewChild('titleElement') titleElement: ElementRef<HTMLElement>;
   @ViewChild('contentElement') contentElement: ElementRef<HTMLElement>;
@@ -183,5 +184,9 @@ export class NotePreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     this.activeShortcut = shortcut;
+  }
+
+  public closeNote(): void {
+    this.onClose.emit(true);
   }
 }

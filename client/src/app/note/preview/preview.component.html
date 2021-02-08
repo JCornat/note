@@ -1,4 +1,8 @@
 <div class="preview" [ngClass]="_data.color" c7zDragDrop (onFileDropped)="onFileDropped($event)" (onDraggedOver)="dragOver($event)" style="position:relative;">
+    <div class="close" (click)="closeNote()">
+        <i class="icon icon-close"></i>
+    </div>
+
     <div class="flex mt-24 pb-24" style="align-items: end;">
         <div class="date bold opacity-8" style="font-size: 13px;">{{_data.dateString}}</div>
     </div>

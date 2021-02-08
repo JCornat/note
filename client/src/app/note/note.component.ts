@@ -123,6 +123,10 @@ export class NoteComponent implements OnInit {
     this.note = null;
   }
 
+  public async onClose(note: Note): Promise<void> {
+    this.note = null;
+  }
+
   public createNote(): void {
     const currentDate = moment();
     const note = {
