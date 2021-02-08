@@ -5,12 +5,15 @@
 
     <div style="position: relative; z-index: 1;">
         <div style="position: absolute; z-index: -1; top: 0; left: 0;" class="opacity-3 title" *ngIf="isEmptyTitle">Title</div>
-        <div class="title" contenteditable="true" (keydown.enter)="preventDefault($event)" (input)="onTitleChange($event.target)" #titleElement></div>
+        <div class="title" contenteditable="true" spellcheck="false" (keydown.enter)="preventDefault($event)" (input)="onTitleChange($event.target)" #titleElement></div>
     </div>
 
     <div style="position: relative; z-index: 1;">
         <div style="position: absolute; z-index: -1; top: 0; left: 0;" class="opacity-3 content" *ngIf="isEmptyContent">Content</div>
-        <p class="content" contenteditable="true" (input)="onContentChange($event.target)" style="outline: none;" #contentElement></p>
+        <p class="content" contenteditable="true" spellcheck="false" (input)="onContentChange($event.target)" style="outline: none;" #contentElement></p>
+        <button class="fontStyle" onclick="document.execCommand('italic',false,null);" title="Italicize Highlighted Text"><i>I</i></button>
+        <button class="fontStyle" onclick="document.execCommand( 'bold',false,null);" title="Bold Highlighted Text"><b>B</b></button>
+        <button class="fontStyle" onclick="document.execCommand( 'underline',false,null);"><u>U</u></button>
     </div>
 
     <!--    <div class="mt-32">-->
