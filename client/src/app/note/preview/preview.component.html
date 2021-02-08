@@ -33,6 +33,14 @@
 
     <div class="shortcut-container">
         <div class="shortcut">
+            <button onclick="document.execCommand('undo',false,null);"><i class="icon icon-undo"></i></button>
+        </div>
+
+        <div class="shortcut">
+            <button onclick="document.execCommand('redo',false,null);"><i class="icon icon-redo"></i></button>
+        </div>
+
+        <div class="shortcut">
             <button (click)="toggleShortcut('text-format')"><i class="icon icon-text-format"></i></button>
 
             <ng-container *ngIf="activeShortcut === 'text-format'">
