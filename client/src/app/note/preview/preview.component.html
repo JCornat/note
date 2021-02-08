@@ -60,7 +60,7 @@
             <button (click)="toggleShortcut('color')"><i class="icon icon-palette"></i></button>
 
             <ng-container *ngIf="activeShortcut === 'color'">
-                <div class="shortcut-more">
+                <div class="shortcut-more mt-8">
                     <ng-container *ngFor="let item of colors">
                         <div class="pellet ml-8" [ngClass]="item" (click)="updateColor(item)">
                             <i class="icon icon-check" *ngIf="_data.color === item"></i>
