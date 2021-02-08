@@ -1,9 +1,8 @@
 import { AfterViewInit, Component, ElementRef, EventEmitter, Input, OnDestroy, OnInit, Output, ViewChild } from '@angular/core';
 import { Note } from '../note';
-import { FormControl, FormGroup } from '@angular/forms';
+import { FormArray, FormControl, FormGroup } from '@angular/forms';
 import * as Global from '../../global/global';
 import { Subscription } from 'rxjs';
-import { debounceTime } from 'rxjs/operators';
 import { SERVER_URL } from '../../config/config';
 import { RequestService } from '../../request/request.service';
 
@@ -38,24 +37,20 @@ export class NotePreviewComponent implements OnInit, AfterViewInit, OnDestroy {
   @ViewChild('contentElement') contentElement: ElementRef<HTMLElement>;
 
   public _data: Note;
-  public progress: number;
   public isSending: boolean;
   public uploadError: boolean;
-  public currentFile: File;
   public edit: boolean;
   public isDragover: boolean;
   public isEmptyTitle: boolean;
   public isEmptyContent: boolean;
   public formGroup: FormGroup;
   public colors: string[];
-  public images: string[];
   public formGroupSubscriber: Subscription;
-  public xhr: XMLHttpRequest;
 
   constructor(
     public requestService: RequestService,
   ) {
-    this.images = [];
+    //
   }
 
   public ngOnInit(): void {
@@ -84,10 +79,18 @@ export class NotePreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.isEmptyTitle = (Global.isEmpty(this._data.title));
     this.isEmptyContent = (Global.isEmpty(this._data.content));
 
+    const imageControl = [];
+    if (Global.isPopulated(this._data.images)) {
+      for (const image of this._data.images) {
+        imageControl.push(new FormControl(image));
+      }
+    }
+
     this.formGroup = new FormGroup({
       title: new FormControl(this._data.title),
       content: new FormControl(this._data.content),
       color: new FormControl(this._data.color),
+      images: new FormArray(imageControl),
     });
 
     this.formGroupSubscriber = this.formGroup.valueChanges
@@ -138,7 +141,12 @@ export class NotePreviewComponent implements OnInit, AfterViewInit, OnDestroy {
   public async onFileDropped(file: File): Promise<void> {
     this.isDragover = false;
     const url = await this.uploadFile(file);
-    this.images.push(url);
+    if (Global.isEmpty(this._data.images)) {
+      this._data.images = [];
+    }
+
+    this._data.images.push(url);
+    (this.formGroup.controls.images as FormArray).push(new FormControl(url));
   }
 
   public dragOver(event: boolean): void {
@@ -162,5 +170,19 @@ export class NotePreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     }
 
     return url;
+  }
+
+  public removeImage(index: number): void {
+    const res = [];
+    for (let i = 0; i < this._data.images.length; i++) {
+      if (i === index) {
+        continue;
+      }
+
+      res.push(this._data.images[i]);
+    }
+
+    this._data.images = res;
+    (this.formGroup.controls.images as FormArray).removeAt(index);
   }
 }

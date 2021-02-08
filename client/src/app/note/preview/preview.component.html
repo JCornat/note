@@ -22,11 +22,14 @@
     <!--        </ng-container>-->
     <!--    </div>-->
 
-    <ng-container *ngIf="images">
+    <ng-container *ngIf="_data.images?.length > 0">
         <div class="mt-32 images-container">
-            <ng-container *ngFor="let image of images">
+            <ng-container *ngFor="let image of _data.images; index as i">
                 <div class="mb-16">
-                    <img [src]="image" class="shadow-md" alt="Image">
+                    <div style="position: relative; display: inline;">
+                        <img [src]="image" class="shadow-md" alt="Image">
+                        <c7z-button class="raised grey" icon="delete" (onClick)="removeImage(i)" style="position: absolute; right: 8px; bottom: 12px;"></c7z-button>
+                    </div>
                 </div>
             </ng-container>
         </div>

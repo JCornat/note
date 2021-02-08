@@ -92,16 +92,18 @@ export class NoteComponent implements OnInit {
     this.note = note;
   }
 
-  public async onUpdate(data: { title: string, content: string, color: string }, note: Note): Promise<void> {
+  public async onUpdate(data: { title: string, content: string, color: string, images: string[] }, note: Note): Promise<void> {
     note.title = data.title;
     note.content = data.content;
     note.color = data.color;
+    note.images = data.images;
 
     this.noteUpdated = true;
     this.saveSubject.next(note);
   }
 
   public async save(note: Note): Promise<void> {
+    console.log('save', note);
     if (note._id) {
       await this.noteService.update(note);
     } else {

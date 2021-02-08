@@ -5,4 +5,5 @@ export interface Note {
   date?: any;
   dateString?: any;
   color?: string;
+  images?: string[];
 }
