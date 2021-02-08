@@ -11,34 +11,6 @@
     <div style="position: relative; z-index: 1;">
         <div style="position: absolute; z-index: -1; top: 0; left: 0;" class="opacity-3 content" *ngIf="isEmptyContent">Content</div>
         <p class="content" contenteditable="true" spellcheck="false" (input)="onContentChange($event.target)" style="outline: none;" #contentElement></p>
-        <button class="fontStyle" onclick="document.execCommand('italic',false,null);" title="Italicize Highlighted Text"><i>I</i></button>
-        <button class="fontStyle" onclick="document.execCommand( 'bold',false,null);" title="Bold Highlighted Text"><b>B</b></button>
-        <button class="fontStyle" onclick="document.execCommand( 'underline',false,null);"><u>U</u></button>
-        <c7z-button (onClick)="addCheckbox()"></c7z-button>
-    </div>
-
-    <!--    <div class="mt-32">-->
-    <!--        <ng-container>-->
-    <!--            <div class="flex">-->
-    <!--                <i class="icon icon-check-box-outline-blank" style="font-size: 22px;"></i>-->
-    <!--                <p contenteditable="true" (keydown.enter)="preventDefault($event)">Nouvel item</p>-->
-    <!--            </div>-->
-    <!--        </ng-container>-->
-    <!--    </div>-->
-
-    <div class="flex mb-24" style="margin-top: 80px">
-        <ng-container *ngFor="let item of colors">
-            <div class="pellet mr-6" [ngClass]="item" (click)="updateColor(item)">
-                <i class="icon icon-check" *ngIf="_data.color === item"></i>
-            </div>
-        </ng-container>
-
-        <div class="fill"></div>
-    </div>
-
-    <div class="flex mb-32">
-        <div class="fill"></div>
-        <c7z-button class="secondary red" icon="delete" (onClick)="remove()"></c7z-button>
     </div>
 
     <ng-container *ngIf="isDragover || isSending">
@@ -54,4 +26,46 @@
     </ng-container>
 
     <input type="file" style="position: absolute; width: 1px; height: 1px; top: 10px; left: 10px; z-index: -200;" #inputFile (change)="selectedFile($event)">
+
+    <div class="shortcut-container">
+        <div class="shortcut">
+            <button (click)="toggleShortcut('text-format')"><i class="icon icon-text-format"></i></button>
+
+            <ng-container *ngIf="activeShortcut === 'text-format'">
+                <div class="shortcut-more">
+                    <button onclick="document.execCommand('italic',false,null);"><i class="icon icon-format-italic"></i></button>
+                    <button onclick="document.execCommand( 'bold',false,null);"><i class="icon icon-format-bold"></i></button>
+                    <button onclick="document.execCommand( 'underline',false,null);"><i class="icon icon-format-underlined"></i></button>
+                </div>
+            </ng-container>
+        </div>
+
+        <div class="shortcut">
+            <button (click)="fireFileUpload()"><i class="icon icon-attach-file"></i></button>
+        </div>
+
+        <div class="shortcut">
+            <button (click)="toggleShortcut('color')"><i class="icon icon-palette"></i></button>
+
+            <ng-container *ngIf="activeShortcut === 'color'">
+                <div class="shortcut-more">
+                    <ng-container *ngFor="let item of colors">
+                        <div class="pellet ml-8" [ngClass]="item" (click)="updateColor(item)">
+                            <i class="icon icon-check" *ngIf="_data.color === item"></i>
+                        </div>
+                    </ng-container>
+                </div>
+            </ng-container>
+        </div>
+
+        <div class="shortcut">
+            <button (click)="toggleShortcut('delete')"><i class="icon icon-delete"></i></button>
+
+            <ng-container *ngIf="activeShortcut === 'delete'">
+                <div class="shortcut-more">
+                    <button (click)="remove()"><i class="icon icon-check"></i></button>
+                </div>
+            </ng-container>
+        </div>
+    </div>
 </div>

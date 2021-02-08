@@ -39,6 +39,7 @@ export class NotePreviewComponent implements OnInit, AfterViewInit, OnDestroy {
 
   public _data: Note;
   public isSending: boolean;
+  public activeShortcut: string;
   public uploadError: boolean;
   public edit: boolean;
   public isDragover: boolean;
@@ -160,7 +161,7 @@ export class NotePreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     return url;
   }
 
-  public addCheckbox(): void {
+  public fireFileUpload(): void {
     this.inputFile.nativeElement.click();
   }
 
@@ -173,5 +174,14 @@ export class NotePreviewComponent implements OnInit, AfterViewInit, OnDestroy {
     this.contentElement.nativeElement.focus();
     const url = await this.uploadFile(files[0]);
     document.execCommand('insertImage', null, url);
+  }
+
+  public toggleShortcut(shortcut: string): void {
+    if (shortcut === this.activeShortcut) {
+      this.activeShortcut = null;
+      return;
+    }
+
+    this.activeShortcut = shortcut;
   }
 }
